@@ -1,0 +1,9 @@
+C:\Users\andop\source\repos\MindMap_BackEnd_Services\MindMap_General_Purpose_API\bin\Debug\netcoreapp3.1\appsettings.Development.json
+C:\Users\andop\source\repos\MindMap_BackEnd_Services\MindMap_General_Purpose_API\bin\Debug\netcoreapp3.1\appsettings.json
+C:\Users\andop\source\repos\MindMap_BackEnd_Services\MindMap_General_Purpose_API\bin\Debug\netcoreapp3.1\Properties\launchSettings.json
+C:\Users\andop\source\repos\MindMap_BackEnd_Services\MindMap_General_Purpose_API\obj\Debug\netcoreapp3.1\MindMap_General_Purpose_API.csprojAssemblyReference.cache
+C:\Users\andop\source\repos\MindMap_BackEnd_Services\MindMap_General_Purpose_API\obj\Debug\netcoreapp3.1\MindMap_General_Purpose_API.AssemblyInfoInputs.cache
+C:\Users\andop\source\repos\MindMap_BackEnd_Services\MindMap_General_Purpose_API\obj\Debug\netcoreapp3.1\MindMap_General_Purpose_API.AssemblyInfo.cs
+C:\Users\andop\source\repos\MindMap_BackEnd_Services\MindMap_General_Purpose_API\obj\Debug\netcoreapp3.1\MindMap_General_Purpose_API.RazorTargetAssemblyInfo.cache
+C:\Users\andop\source\repos\MindMap_BackEnd_Services\MindMap_General_Purpose_API\obj\Debug\netcoreapp3.1\staticwebassets\MindMap_General_Purpose_API.StaticWebAssets.Manifest.cache
+C:\Users\andop\source\repos\MindMap_BackEnd_Services\MindMap_General_Purpose_API\obj\Debug\netcoreapp3.1\staticwebassets\MindMap_General_Purpose_API.StaticWebAssets.xml
