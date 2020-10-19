@@ -10,8 +10,8 @@ MindMap_Gateway/bin
 MindMap_Gateway/obj
 
 #GeneralPurposeAPI
-MindMap_Genral_Purpose_API/bin
-MindMap_Genera_Purpose_API/obj
+MindMap_General_Purpose_API/bin
+MindMap_General_Purpose_API/obj
 
 #WS 
 MindMap_WebsocketServer/bin
