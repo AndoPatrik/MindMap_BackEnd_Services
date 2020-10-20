@@ -35,5 +35,13 @@ namespace MindMap_Email_API.Controllers
             })
             .ToArray();
         }
+
+        [HttpGet("{id}")]
+        public IActionResult Get1(string id)
+        {
+            return Ok(id);
+        }
+
+
     }
 }

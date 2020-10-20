@@ -29,5 +29,17 @@ namespace MindMap_General_Purpose_API.Controllers
             await _collection.InsertOneAsync(bodyPayload);
             return Ok("All good");
         }
+    
+        [HttpGet("activate/{userId}")]
+        public async Task<IActionResult> ActivateUser(string userId) 
+        {
+            var user = await _collection.Find(Builders<User>.Filter.Eq(u => u.Id, userId)).FirstOrDefaultAsync();
+
+            if (user == null) return NotFound();
+
+            user.IsActive = true;
+            await _collection.ReplaceOneAsync(Builders<User>.Filter.Eq(u => u.Id, userId), user);
+            return Ok(user);
+        }
     }
 }
