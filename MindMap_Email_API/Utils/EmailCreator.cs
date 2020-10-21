@@ -6,10 +6,10 @@ namespace MindMap_Email_API.Utils
 {
     public class EmailCreator
     {
-        public static void CreateEmail(string id) 
+        public static void CreateEmail(string id, string emailToSend) 
         {
-            string to = "screadern@gmail.com";
-            string content = @"Activate your account by clicking: https://localhost:5001/api/usermanagement/activate/" + id;
+            string to = emailToSend;
+            string content = @"Activate your account by clicking: https://localhost:5001/activate/" + id;
             //string senderUserame = "";
             string senderPw = "F4wHZWf8rep5LDTj"; // hide this into appsettings...
             string senderEmail = "mindmapper.agent@gmail.com";
