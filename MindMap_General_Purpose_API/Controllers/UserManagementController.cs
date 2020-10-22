@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MindMap_General_Purpose_API.Models;
 using MindMap_General_Purpose_API.Utils;
 using MongoDB.Bson;
@@ -22,6 +23,7 @@ namespace MindMap_General_Purpose_API.Controllers
             _database = mongoClient.GetDatabase("MindMapDb");
             _collection = _database.GetCollection<User>("Users");
         }
+
         // POST api/<UserManagementController>
         [HttpPost("registration")]
         public async Task<IActionResult> Post([FromBody] User bodyPayload)
@@ -33,7 +35,7 @@ namespace MindMap_General_Purpose_API.Controllers
                 var existingUser = await _collection.Find(Builders<User>.Filter.Eq(u => u.Email, bodyPayload.Email)).FirstOrDefaultAsync();
                 if (existingUser != null) return Conflict("This email is alrady registered...");
                 await _collection.InsertOneAsync(bodyPayload);
-                await HttpServiceCall.PostBasicAsync("https://localhost:6001/api/email", bodyPayload, CancellationToken.None) ;
+                await HttpServiceCall.PostBasicAsync("https://localhost:6001/api/email", bodyPayload, CancellationToken.None);
                 return Ok("New user been added");
             }
             catch (System.Exception)
@@ -42,15 +44,30 @@ namespace MindMap_General_Purpose_API.Controllers
                 throw;
             }
         }
-    
+
         [HttpGet("activate/{userId}")]
-        public async Task<IActionResult> ActivateUser(string userId) 
+        public async Task<IActionResult> ActivateUser(string userId)
         {
             var user = await _collection.Find(Builders<User>.Filter.Eq(u => u.Id, userId)).FirstOrDefaultAsync();
             if (user == null) return NotFound();
             user.IsActive = true;
             await _collection.ReplaceOneAsync(Builders<User>.Filter.Eq(u => u.Id, userId), user);
             return Ok("Your account has been updated. You can log in now.");
+        }
+
+        [HttpPost("authenticate")]
+        public async Task<IActionResult> Authenticate([FromBody] User userParam)
+        {
+            var user = await _collection.Find(Builders<User>.Filter.Eq(u => u.Email, userParam.Email)
+                & Builders<User>.Filter.Eq(u => u.Password, userParam.Password)).FirstOrDefaultAsync();
+
+            if (user == null) return BadRequest(new { message="Email or password is not correct." });
+
+            if(!user.IsActive) return BadRequest(new { message = "User is not active." });
+
+            string token = JWTtoken.GenerateToken(user.Id);
+
+            return Ok(token);
         }
     }
 }
