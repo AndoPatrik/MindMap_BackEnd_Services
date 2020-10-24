@@ -12,7 +12,6 @@ MindMap_Gateway/obj
 #GeneralPurposeAPI
 MindMap_General_Purpose_API/bin
 MindMap_General_Purpose_API/obj
-MindMap_General_Purpose_API/obj/Debug
 
 #WS 
 MindMap_WebsocketServer/bin
