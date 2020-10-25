@@ -1,5 +1,5 @@
 #VS files
-.vs
+.\vs
 
 #EmailAPI
 MindMap_Email_API/bin
@@ -16,11 +16,3 @@ MindMap_General_Purpose_API/obj
 #WS 
 MindMap_WebsocketServer/bin
 MindMap_WebsocketServer/obj
-
-
-MindMap_General_Purpose_API/obj/project.nuget.cache
-MindMap_General_Purpose_API/obj/project.assets.json
-MindMap_General_Purpose_API/obj/MindMap_General_Purpose_API.csproj.nuget.dgspec.json
-MindMap_General_Purpose_API/obj/Debug/netcoreapp3.1/MindMap_General_Purpose_API.csprojAssemblyReference.cache
-MindMap_General_Purpose_API/obj/Debug/netcoreapp3.1/MindMap_General_Purpose_API.csproj.FileListAbsolute.txt
-MindMap_General_Purpose_API/obj/Debug/netcoreapp3.1/MindMap_General_Purpose_API.assets.cache

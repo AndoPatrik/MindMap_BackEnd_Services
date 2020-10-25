@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using Microsoft.Extensions.Configuration;
 using MindMap_Email_API.Utils;
 using MindMap_General_Purpose_API.Models;
 
@@ -9,19 +9,18 @@ namespace MindMap_Email_API.Controllers
     [ApiController]
     public class EmailController : ControllerBase
     {
-        // GET api/<EmailController>/smth
-        [HttpPost]
-        public IActionResult Post([FromBody] User bodyPayload)
+        private readonly IConfiguration _configuration;
+
+        public EmailController(IConfiguration configuration)
         {
-            EmailCreator.CreateEmail(bodyPayload.Id, bodyPayload.Email);
-            return Ok("Chcek your inbox....");
+            _configuration = configuration;
         }
-        [HttpGet]
-        public IActionResult Test()
+
+        [HttpPost]
+        public IActionResult SendActivationEmail([FromBody] User bodyPayload)
         {
-
-            return Ok("Hello");
-
+            EmailManager.CreateEmail(bodyPayload.Id, bodyPayload.Email, _configuration["EmailPW"]);
+            return Ok("Chcek your inbox....");
         }
     }
 }

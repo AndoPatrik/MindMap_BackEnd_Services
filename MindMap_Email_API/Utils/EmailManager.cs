@@ -4,14 +4,13 @@ using System.Net.Mail;
 
 namespace MindMap_Email_API.Utils
 {
-    public class EmailCreator
+    public class EmailManager
     {
-        public static void CreateEmail(string id, string emailToSend) 
+        public static void CreateEmail(string id, string targetEmail, string secret) 
         {
-            string to = emailToSend;
+            string to = targetEmail;
             string content = @"Activate your account by clicking: https://localhost:5001/activate/" + id;
-            //string senderUserame = "";
-            string senderPw = "F4wHZWf8rep5LDTj"; // hide this into appsettings...
+            string senderPw = secret;
             string senderEmail = "mindmapper.agent@gmail.com";
 
             SmtpClient smtpClient;
@@ -20,7 +19,6 @@ namespace MindMap_Email_API.Utils
             try
             {
                 smtpClient = new SmtpClient("smtp.gmail.com");
-
                 smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
                 smtpClient.UseDefaultCredentials = true;
                 smtpClient.EnableSsl = true;
