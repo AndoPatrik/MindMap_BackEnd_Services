@@ -6,11 +6,11 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace MindMap_General_Purpose_API.Utils
 {
-    public class JWTtoken
+    public class JWT
     {
         public static string GenerateToken(string userId)
         {
-			var mySecret = "secretsecretsecretsecretsecretsecret";
+			var mySecret = "CRmvf{Mn2p84aCVmVWYAR]a6_qk)-;kD";
 			var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(mySecret));
 
 			var myIssuer = "localhost";

@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MindMap_General_Purpose_API.Models;
 using MindMap_General_Purpose_API.Utils;
-using MongoDB.Bson;
 using MongoDB.Driver;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,19 +27,19 @@ namespace MindMap_General_Purpose_API.Controllers
         [HttpPost("registration")]
         public async Task<IActionResult> Post([FromBody] User bodyPayload)
         {
-            if (!ValidatorUtil.ValidateUser(bodyPayload)) return BadRequest("Check the payload");
+            if (!ValidatorUtil.ValidateUser(bodyPayload)) return BadRequest("Check the payload.");
             try
             {
                 bodyPayload.IsActive = false;
                 var existingUser = await _collection.Find(Builders<User>.Filter.Eq(u => u.Email, bodyPayload.Email)).FirstOrDefaultAsync();
-                if (existingUser != null) return Conflict("This email is alrady registered...");
+                if (existingUser != null) return Conflict("This email is alrady registered.");
                 await _collection.InsertOneAsync(bodyPayload);
-                await HttpServiceCall.PostBasicAsync("https://localhost:6001/api/email", bodyPayload, CancellationToken.None);
+                await HttpService.PostAsync("https://localhost:6001/api/email", bodyPayload, CancellationToken.None);
                 return Ok("New user been added");
             }
-            catch (System.Exception)
+            catch (Exception)
             {
-                return NotFound("Service could not create the user..."); // Should be changed to better response msg
+                return NotFound("Service could not create the user.");
                 throw;
             }
         }
@@ -59,15 +58,14 @@ namespace MindMap_General_Purpose_API.Controllers
         public async Task<IActionResult> Authenticate([FromBody] User userParam)
         {
             var user = await _collection.Find(Builders<User>.Filter.Eq(u => u.Email, userParam.Email)
-                & Builders<User>.Filter.Eq(u => u.Password, userParam.Password)).FirstOrDefaultAsync();
+                & Builders<User>.Filter.Eq(u => u.Password, userParam.Password))
+                .FirstOrDefaultAsync();
 
-            if (user == null) return BadRequest(new { message="Email or password is not correct." });
+            if (user == null) return BadRequest("Email or password is not correct.");
 
-            if(!user.IsActive) return BadRequest(new { message = "User is not active." });
+            if(!user.IsActive) return BadRequest("User is not active.");
 
-            string token = JWTtoken.GenerateToken(user.Id);
-
-            return Ok(token);
+            return Ok(JWT.GenerateToken(user.Id));
         }
     }
 }

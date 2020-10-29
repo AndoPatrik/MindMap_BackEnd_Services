@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MindMap_General_Purpose_API.Utils
 {
-    public class HttpServiceCall
+    public class HttpService
     {
-        public static async Task PostBasicAsync(string url, object content, CancellationToken cancellationToken)
+        public static async Task PostAsync(string url, object content, CancellationToken cancellationToken)
         {
             using (var client = new HttpClient())
             using (var request = new HttpRequestMessage(HttpMethod.Post, url))

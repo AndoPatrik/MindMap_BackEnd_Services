@@ -6,10 +6,7 @@ namespace MindMap_General_Purpose_API.Utils
     {
         public static bool ValidateUser(User user) 
         {
-            if (!string.IsNullOrWhiteSpace(user.Email) && !string.IsNullOrWhiteSpace(user.Password))
-            {
-                return true;
-            }
+            if (!string.IsNullOrWhiteSpace(user.Email) && !string.IsNullOrWhiteSpace(user.Password)) return true;
             return false;
         }
     }
