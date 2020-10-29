@@ -1,5 +1,6 @@
 ﻿{
   "Routes": [
+    // REGISTRATION HTTPS
     {
       "DownstreamPathTemplate": "/api/usermanagement/registration",
       "DownstreamScheme": "https",
@@ -12,6 +13,7 @@
       "UpstreamPathTemplate": "/registration",
       "UpstreamHttpMethod": [ "POST" ]
     },
+    //ACTIVATE HTTPS
     {
       "DownstreamPathTemplate": "/api/usermanagement/activate/{id}",
       "DownstreamScheme": "https",
@@ -24,6 +26,7 @@
       "UpstreamPathTemplate": "/activate/{id}",
       "UpstreamHttpMethod": [ "GET" ]
     },
+    //AUTHENTICATE HTTPS
     {
       "DownstreamPathTemplate": "/api/usermanagement/authenticate",
       "DownstreamScheme": "https",

@@ -8,10 +8,6 @@ namespace MindMap_General_Purpose_API.Utils
 {
     public class JWTtoken
     {
-        public JWTtoken()
-        {
-        }
-
         public static string GenerateToken(string userId)
         {
 			var mySecret = "secretsecretsecretsecretsecretsecret";
