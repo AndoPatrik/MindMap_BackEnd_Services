@@ -17,3 +17,7 @@ MindMap_General_Purpose_API/obj
 #WS 
 MindMap_WebsocketServer/bin
 MindMap_WebsocketServer/obj
+
+#test
+xUnit_General_Purpose_API/bin
+xUnit_General_Purpose_API/obj

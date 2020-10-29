@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using MongoDB.Driver;
+using Newtonsoft.Json;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -8,8 +10,9 @@ namespace MindMap_General_Purpose_API.Utils
 {
     public class HttpService
     {
-        public static async Task PostAsync(string url, object content, CancellationToken cancellationToken)
+        public static async Task<bool> PostAsync(string url, object content, CancellationToken cancellationToken)
         {
+            
             using (var client = new HttpClient())
             using (var request = new HttpRequestMessage(HttpMethod.Post, url))
             {
@@ -23,6 +26,8 @@ namespace MindMap_General_Purpose_API.Utils
                         .ConfigureAwait(false))
                     {
                         response.EnsureSuccessStatusCode();
+                        if (response.StatusCode == HttpStatusCode.OK) return true;
+                        return false;
                     }
                 }
             }

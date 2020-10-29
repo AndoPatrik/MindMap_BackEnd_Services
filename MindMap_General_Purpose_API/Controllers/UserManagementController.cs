@@ -34,7 +34,8 @@ namespace MindMap_General_Purpose_API.Controllers
                 var existingUser = await _collection.Find(Builders<User>.Filter.Eq(u => u.Email, bodyPayload.Email)).FirstOrDefaultAsync();
                 if (existingUser != null) return Conflict("This email is alrady registered.");
                 await _collection.InsertOneAsync(bodyPayload);
-                await HttpService.PostAsync("https://localhost:6001/api/email", bodyPayload, CancellationToken.None);
+                bool IsSuccesful = await HttpService.PostAsync("https://localhost:6001/api/email", bodyPayload, CancellationToken.None);
+                // Check against 'IsSuccesful' to see if email status code.
                 return Ok("New user been added");
             }
             catch (Exception)
