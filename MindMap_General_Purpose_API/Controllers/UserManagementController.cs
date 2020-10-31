@@ -35,7 +35,7 @@ namespace MindMap_General_Purpose_API.Controllers
                 if (existingUser != null) return Conflict("This email is alrady registered.");
                 await _collection.InsertOneAsync(bodyPayload);
                 bool IsSuccesful = await HttpService.PostAsync("https://localhost:6001/api/email", bodyPayload, CancellationToken.None);
-                // Check against 'IsSuccesful' to see if email status code.
+                // Check against 'IsSuccesful' to see email status code.
                 return Ok("New user been added");
             }
             catch (Exception)
@@ -48,8 +48,16 @@ namespace MindMap_General_Purpose_API.Controllers
         [HttpGet("activate/{userId}")]
         public async Task<IActionResult> ActivateUser(string userId)
         {
-            var user = await _collection.Find(Builders<User>.Filter.Eq(u => u.Id, userId)).FirstOrDefaultAsync();
-            if (user == null) return NotFound();
+            User user;
+            try
+            {
+                user = await _collection.Find(Builders<User>.Filter.Eq(u => u.Id, userId)).FirstOrDefaultAsync();
+            }
+            catch (Exception)
+            {
+                return NotFound("User does not exists.");
+            }
+            if (user == null) return NotFound("User does not exists.");
             user.IsActive = true;
             await _collection.ReplaceOneAsync(Builders<User>.Filter.Eq(u => u.Id, userId), user);
             return Ok("Your account has been updated. You can log in now.");
