@@ -25,7 +25,7 @@ namespace MindMap_General_Purpose_API.Controllers
 
         // POST api/<UserManagementController>
         [HttpPost("registration")]
-        public async Task<IActionResult> Post([FromBody] User bodyPayload)
+        public async Task<IActionResult> RegisterUser([FromBody] User bodyPayload)
         {
             if (!ValidatorUtil.ValidateUser(bodyPayload)) return BadRequest("Check the payload.");
             try
@@ -64,7 +64,7 @@ namespace MindMap_General_Purpose_API.Controllers
         }
 
         [HttpPost("authenticate")]
-        public async Task<IActionResult> Authenticate([FromBody] User userParam)
+        public async Task<IActionResult> AuthenticateUser([FromBody] User userParam)
         {
             var user = await _collection.Find(Builders<User>.Filter.Eq(u => u.Email, userParam.Email)
                 & Builders<User>.Filter.Eq(u => u.Password, userParam.Password))
