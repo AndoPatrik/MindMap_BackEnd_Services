@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MindMap_General_Purpose_API\MindMap_General_Purpose_API.csproj" />
+    <ProjectReference Include="..\SharedResources\SharedResources.csproj" />
   </ItemGroup>
 
 </Project>

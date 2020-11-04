@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using MindMap_General_Purpose_API;
+﻿using MindMap_General_Purpose_API;
 using MindMap_General_Purpose_API.Models;
-using MongoDB.Driver;
 using Newtonsoft.Json;
+using SharedResources.SharedTests;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -12,24 +9,13 @@ using Xunit;
 
 namespace xUnit_General_Purpose_API
 {
-    public class UsersControllerIntegrationTests
+    public class UsersControllerIntegrationTests : IClassFixture<WebApplicationFactoryWithTestMongo<Startup>>
     {
         private readonly HttpClient _client;
-        private readonly WebApplicationFactory<Startup> _appFactory;
 
-        public UsersControllerIntegrationTests()
+        public UsersControllerIntegrationTests(WebApplicationFactoryWithTestMongo<Startup> appFactory)
         {
-            _appFactory = new WebApplicationFactory<Startup>()
-                .WithWebHostBuilder(builder => 
-                {
-                    builder.ConfigureServices(services => 
-                    {
-                        services.RemoveAll(typeof(MongoClient));
-                        services.AddSingleton<MongoClient>(new MongoClient("mongodb+srv://admin:mindmap2020@mindmappercluster.gtnqi.mongodb.net/<dbname>?retryWrites=true&w=majority"));
-                    });
-                });
-        
-            _client = _appFactory.CreateClient(); // Set dev mongo env
+            _client = appFactory.CreateClient(); // Set dev mongo env
         }
 
         //TODO: Initialize few user records for testing
@@ -42,7 +28,7 @@ namespace xUnit_General_Purpose_API
         [Fact] //Change to theory
         public async void ActivateUser_ShouldReturnOk() 
         {
-            var response = await _client.GetAsync("https://localhost:7001/api/usermanagement/activate/5f95c5d26f4799e209733061");
+            var response = await _client.GetAsync("api/usermanagement/activate/5fa2ce6efe435d28620dc18e");
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal("Your account has been updated. You can log in now." , await response.Content.ReadAsStringAsync());
         }
@@ -82,11 +68,11 @@ namespace xUnit_General_Purpose_API
         [InlineData("test@gmail.com","secret")]
         [InlineData("test1@gmail.com","secret1")]
         [InlineData("test2@gmail.com","secret2")]
-        public async void RegisterUser_SuccessfulRegistarton_ShouldReturnOk(string email, string password) 
+        public async void RegisterUser_SuccessfulRegistarton_ShouldReturnOk(string email, string password) // Brakes due to the email api
         {
             User input = new User(email: email, password: password);
             var data = new StringContent(JsonConvert.SerializeObject(input), Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync("https://localhost:7001/api/usermanagement/registration", data);
+            var response = await _client.PostAsync("api/usermanagement/registration", data);
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 

@@ -22,3 +22,8 @@ MindMap_WebsocketServer/obj
 xUnit_General_Purpose_API/bin
 xUnit_General_Purpose_API/obj
 /TestResults
+
+#shared
+/TestResults
+SharedResources/bin
+SharedResources/obj
