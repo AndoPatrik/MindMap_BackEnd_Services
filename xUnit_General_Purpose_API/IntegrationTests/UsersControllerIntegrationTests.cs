@@ -15,7 +15,7 @@ namespace xUnit_General_Purpose_API
 
         public UsersControllerIntegrationTests(WebApplicationFactoryWithTestMongo<Startup> appFactory)
         {
-            _client = appFactory.CreateClient(); // Set dev mongo env
+            _client = appFactory.CreateClient();
         }
 
         //TODO: Initialize few user records for testing
@@ -39,7 +39,7 @@ namespace xUnit_General_Purpose_API
         [InlineData("5f95c5d26f4799e2097hjkle")]
         public async void ActivateUser_ShouldReturnNotFound(string userId) 
         {
-            var response = await _client.GetAsync("https://localhost:7001/api/usermanagement/activate/" + userId);
+            var response = await _client.GetAsync("api/usermanagement/activate/" + userId);
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             Assert.Equal("User does not exists." , await response.Content.ReadAsStringAsync());
         }
