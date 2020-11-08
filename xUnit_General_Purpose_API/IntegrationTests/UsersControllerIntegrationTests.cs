@@ -16,6 +16,9 @@ namespace xUnit_General_Purpose_API
         public UsersControllerIntegrationTests(WebApplicationFactoryWithTestMongo<Startup> appFactory)
         {
             _client = appFactory.CreateClient();
+            // TODO: method to make 5 users in MongoDB + clear DB after use
+            // clear function is last one in file+runs every time we run tests!
+            // READ UP ON: in memory mongodb (MongoToGo)
         }
 
         //TODO: Initialize few user records for testing
@@ -45,22 +48,35 @@ namespace xUnit_General_Purpose_API
         }
 
         //--------------------------------AuthenticateUser-----------------------------------------------
-        [Fact]
-        public void AuthenticateUser_AuthenticationSuccess_ShouldReturnOk()
+        [Theory]
+        [InlineData("test@gmail.com", "secret")]
+        //[InlineData("test1@gmail.com", "secret1")]
+        public async void AuthenticateUser_AuthenticationSuccess_ShouldReturnOk(string email, string password)
         {
-
+            User input = new User(email: email, password: password);
+            var data = new StringContent(JsonConvert.SerializeObject(input), Encoding.UTF8, "application/json");
+            var response = await _client.PostAsync("api/usermanagement/authenticate/", data);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
-        [Fact]
-        public void AuthenticateUser_UserDoesNotExists_ShouldReturnBadRequest() 
+        [Theory]
+        [InlineData("test1@gmail.com", "secret1")]
+        public async void AuthenticateUser_UserDoesNotExists_ShouldReturnBadRequest(string email, string password) 
         {
-
+            User input = new User(email: email, password: password);
+            var data = new StringContent(JsonConvert.SerializeObject(input), Encoding.UTF8, "application/json");
+            var response = await _client.PostAsync("api/usermanagement/authenticate/", data);
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
-        [Fact]
-        public void AuthenticateUser_AccountNotActivated_ShouldReturnBadRequest()
+        [Theory]
+        [InlineData("test@gmail.com", "secret")]
+        public async void AuthenticateUser_AccountNotActivated_ShouldReturnBadRequest(string email, string password)
         {
-
+            User input = new User(email: email, password: password);
+            var data = new StringContent(JsonConvert.SerializeObject(input), Encoding.UTF8, "application/json");
+            var response = await _client.PostAsync("api/usermanagement/authenticate/", data);
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
         //--------------------------------RegistrUser---------------------------------------------------
