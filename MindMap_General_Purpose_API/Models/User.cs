@@ -9,7 +9,7 @@ namespace MindMap_General_Purpose_API.Models
     {
         public User()
         {
-
+            this.ConnectedWorkspaces = new List<ConnectedWorkspace>();
         }
 
         public User(string email, string password)

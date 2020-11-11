@@ -54,22 +54,24 @@ namespace MindMap_General_Purpose_API.Controllers
         public async Task<IActionResult> CreateWorkspace([FromBody] Workspace bodyPayload)
         {
             //inout validation
-            try 
+            using (var session = _mongoClient.StartSession())
             {
-                //transaction
-                await _workspacesCollection.InsertOneAsync(bodyPayload);
-                User userToUpdate = await _usersCollection.Find<User>(Builders<User>.Filter.Eq(u => u.Id, bodyPayload.Creator.Id)).FirstOrDefaultAsync();
-                User updatedUser = userToUpdate;
-                updatedUser.ConnectedWorkspaces.Add(new ConnectedWorkspace(bodyPayload.Id));
-                /*await _usersCollection.UpdateOne(
-                   Builders<User>.Filter.Eq(u => u.Id, bodyPayload.Creator.Id),
-                   Builders<User>.Update.Push("ConnectedWorkspaces", bodyPayload.Id)); */
-                var result = await _usersCollection.ReplaceOneAsync(Builders<User>.Filter.Eq(u => u.Id, bodyPayload.Creator.Id), updatedUser);
-                return Ok(bodyPayload.Id); 
-            }
-            catch (Exception)
-            {
-                return Conflict("Could not create Workspace");
+                try
+                {
+                    session.StartTransaction();
+                    await _workspacesCollection.InsertOneAsync(bodyPayload);
+                    User userToUpdate = await _usersCollection.Find<User>(Builders<User>.Filter.Eq(u => u.Id, bodyPayload.Creator.Id)).FirstOrDefaultAsync();
+                    User updatedUser = userToUpdate;
+                    updatedUser.ConnectedWorkspaces.Add(new ConnectedWorkspace(bodyPayload.Id));
+                    var result = await _usersCollection.ReplaceOneAsync(Builders<User>.Filter.Eq(u => u.Id, bodyPayload.Creator.Id), updatedUser);
+                    session.CommitTransaction();
+                    return Ok(bodyPayload.Id);
+                }
+                catch (Exception)
+                {
+                    session.AbortTransaction();
+                    return Conflict("Could not create Workspace");
+                }
             }
         }
 
