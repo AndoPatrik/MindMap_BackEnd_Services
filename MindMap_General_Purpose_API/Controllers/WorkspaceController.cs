@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MindMap_General_Purpose_API.Models;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace MindMap_General_Purpose_API.Controllers
@@ -13,13 +14,15 @@ namespace MindMap_General_Purpose_API.Controllers
     {
         private readonly IMongoClient _mongoClient;
         private readonly IMongoDatabase _database;
-        private readonly IMongoCollection<Workspace> _collection;
+        private readonly IMongoCollection<Workspace> _workspacesCollection;
+        private readonly IMongoCollection<User> _usersCollection;
 
         public WorkspaceController(MongoClient mongoClient)
         {
             _mongoClient = mongoClient;
             _database = mongoClient.GetDatabase("MindMapDb");
-            _collection = _database.GetCollection<Workspace>("Workspaces");
+            _workspacesCollection = _database.GetCollection<Workspace>("Workspaces");
+            _usersCollection = _database.GetCollection<User>("Users");
         }
 
         // GET: api/<WorkspaceController>
@@ -35,7 +38,7 @@ namespace MindMap_General_Purpose_API.Controllers
         {
             try
             {
-                Workspace workspace = await _collection.Find(Builders<Workspace>.Filter.Eq(w => w.Id , id)).FirstOrDefaultAsync();
+                Workspace workspace = await _workspacesCollection.Find(Builders<Workspace>.Filter.Eq(w => w.Id , id)).FirstOrDefaultAsync();
                 return Ok(workspace); 
             }
             catch (Exception)
@@ -50,11 +53,18 @@ namespace MindMap_General_Purpose_API.Controllers
         {
             //inout validation
 
-            try
+            try 
             {
-                //bodyPayload.ShareLink = Guid.NewGuid().ToString();
-                await _collection.InsertOneAsync(bodyPayload);
-                return Ok("Workspace created.");
+                //transaction
+                await _workspacesCollection.InsertOneAsync(bodyPayload);
+                User userToUpdate = await _usersCollection.Find<User>(Builders<User>.Filter.Eq(u => u.Id, bodyPayload.Creator.Id)).FirstOrDefaultAsync();
+                User updatedUser = userToUpdate;
+                updatedUser.ConnectedWorkspaces.Add(bodyPayload.Id);
+                /*await _usersCollection.UpdateOne(
+                   Builders<User>.Filter.Eq(u => u.Id, bodyPayload.Creator.Id),
+                   Builders<User>.Update.Push("ConnectedWorkspaces", bodyPayload.Id)); */
+                var result = await _usersCollection.ReplaceOneAsync(Builders<User>.Filter.Eq(u => u.Id, bodyPayload.Creator.Id), updatedUser);
+                return Ok(bodyPayload.Id);
             }
             catch (Exception)
             {

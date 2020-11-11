@@ -8,7 +8,7 @@ namespace MindMap_General_Purpose_API.Utils
 {
     public class JWT
     {
-        public static string GenerateToken(string userId)
+        public static string GenerateToken(string userId, string email)
         {
 			var mySecret = "CRmvf{Mn2p84aCVmVWYAR]a6_qk)-;kD";
 			var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(mySecret));
@@ -22,6 +22,7 @@ namespace MindMap_General_Purpose_API.Utils
 				Subject = new ClaimsIdentity(new Claim[]
 				{
 					new Claim(ClaimTypes.NameIdentifier, userId),
+					new Claim(ClaimTypes.Email, email )
 				}),
 				Expires = DateTime.UtcNow.AddHours(1),
 				Issuer = myIssuer,

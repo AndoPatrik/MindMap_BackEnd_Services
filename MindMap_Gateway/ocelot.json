@@ -38,8 +38,23 @@
       ],
       "UpstreamPathTemplate": "/authenticate",
       "UpstreamHttpMethod": [ "POST" ]
+    },
+    //CREATE WORKSPACE
+    {
+      "DownstreamPathTemplate": "/api/Workspace/Create",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7001
+        }
+      ],
+      "UpstreamPathTemplate": "/workspace/create",
+      "UpstreamHttpMethod": [ "POST" ]
     }
   ],
+  
+
   "GlobalConfiguration": {
     "BaseUrl": "https://localhost:5001"
   }
