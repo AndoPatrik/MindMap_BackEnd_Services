@@ -51,6 +51,19 @@
       ],
       "UpstreamPathTemplate": "/workspace/create",
       "UpstreamHttpMethod": [ "POST" ]
+    },
+    //FETCH ALL WORKSPACES OF A USER
+    {
+      "DownstreamPathTemplate": "/api/Workspace/GetWorkspacesOfUser/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7001
+        }
+      ],
+      "UpstreamPathTemplate": "/workspace/GetWorkspacesOfUser/{id}",
+      "UpstreamHttpMethod": [ "GET" ]
     }
   ],
   

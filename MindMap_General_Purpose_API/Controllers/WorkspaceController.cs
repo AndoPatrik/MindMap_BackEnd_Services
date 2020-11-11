@@ -52,7 +52,6 @@ namespace MindMap_General_Purpose_API.Controllers
         public async Task<IActionResult> CreateWorkspace([FromBody] Workspace bodyPayload)
         {
             //inout validation
-
             try 
             {
                 //transaction
@@ -64,11 +63,31 @@ namespace MindMap_General_Purpose_API.Controllers
                    Builders<User>.Filter.Eq(u => u.Id, bodyPayload.Creator.Id),
                    Builders<User>.Update.Push("ConnectedWorkspaces", bodyPayload.Id)); */
                 var result = await _usersCollection.ReplaceOneAsync(Builders<User>.Filter.Eq(u => u.Id, bodyPayload.Creator.Id), updatedUser);
-                return Ok(bodyPayload.Id);
+                return Ok(bodyPayload.Id); 
             }
             catch (Exception)
             {
                 return Conflict("Could not create Workspace");
+            }
+        }
+
+        [HttpGet("GetWorkspacesOfUser/{id}")]
+        public async Task<IActionResult> FetchWorkspacesByUser (string id) 
+        {
+            try
+            {
+                User currentUser = await _usersCollection.Find<User>(Builders<User>.Filter.Eq(u => u.Id, id)).FirstOrDefaultAsync();
+                List<string> workspacesConnectedToUser = currentUser.ConnectedWorkspaces;
+                List<Workspace> workspacesToReturn = new List<Workspace>();
+                foreach (var workspace in workspacesConnectedToUser)
+                {
+                    workspacesToReturn.Add(await _workspacesCollection.Find<Workspace>(Builders<Workspace>.Filter.Eq(w => w.Id, workspace)).FirstOrDefaultAsync());
+                }
+                return Ok(workspacesToReturn);
+            }
+            catch (Exception)
+            {
+                return NotFound();
             }
         }
     }
