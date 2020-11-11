@@ -4,7 +4,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MindMap_General_Purpose_API.Models;
 using MongoDB.Bson;
+using MongoDB.Bson.IO;
 using MongoDB.Driver;
+using Newtonsoft.Json;
 
 namespace MindMap_General_Purpose_API.Controllers
 {
@@ -58,7 +60,7 @@ namespace MindMap_General_Purpose_API.Controllers
                 await _workspacesCollection.InsertOneAsync(bodyPayload);
                 User userToUpdate = await _usersCollection.Find<User>(Builders<User>.Filter.Eq(u => u.Id, bodyPayload.Creator.Id)).FirstOrDefaultAsync();
                 User updatedUser = userToUpdate;
-                updatedUser.ConnectedWorkspaces.Add(bodyPayload.Id);
+                updatedUser.ConnectedWorkspaces.Add(new ConnectedWorkspace(bodyPayload.Id));
                 /*await _usersCollection.UpdateOne(
                    Builders<User>.Filter.Eq(u => u.Id, bodyPayload.Creator.Id),
                    Builders<User>.Update.Push("ConnectedWorkspaces", bodyPayload.Id)); */
@@ -77,17 +79,49 @@ namespace MindMap_General_Purpose_API.Controllers
             try
             {
                 User currentUser = await _usersCollection.Find<User>(Builders<User>.Filter.Eq(u => u.Id, id)).FirstOrDefaultAsync();
-                List<string> workspacesConnectedToUser = currentUser.ConnectedWorkspaces;
+                IEnumerable<ConnectedWorkspace> workspacesConnectedToUser = currentUser.ConnectedWorkspaces;
                 List<Workspace> workspacesToReturn = new List<Workspace>();
                 foreach (var workspace in workspacesConnectedToUser)
                 {
-                    workspacesToReturn.Add(await _workspacesCollection.Find<Workspace>(Builders<Workspace>.Filter.Eq(w => w.Id, workspace)).FirstOrDefaultAsync());
+                    workspacesToReturn.Add(await _workspacesCollection.Find<Workspace>(Builders<Workspace>.Filter.Eq(w => w.Id, workspace.WorkspaceId)).FirstOrDefaultAsync());
                 }
                 return Ok(workspacesToReturn);
             }
             catch (Exception)
             {
                 return NotFound();
+            }
+        }
+
+        [HttpDelete("/delete/{id}")]
+        public async Task<IActionResult> DeleteWorkspace(string id) 
+        {
+            //TODO:
+            // Transaction
+            // Remove workspace from users ( based on workspace.Users )
+            // Remove workspace by id
+
+            using (var session = _mongoClient.StartSession())
+            {
+                try
+                {
+                    session.StartTransaction();
+                    Workspace workspaceToDelete = await _workspacesCollection.Find<Workspace>(Builders<Workspace>.Filter.Eq(w => w.Id, id)).FirstOrDefaultAsync();
+                    foreach (var user in workspaceToDelete.Users)
+                    {
+                        var userFilter = Builders<User>.Filter.Eq(u => u.Id, user.Id);
+                        var update = Builders<User>.Update.PullFilter(u => u.ConnectedWorkspaces, Builders<ConnectedWorkspace>.Filter.Where(cw => cw.WorkspaceId == workspaceToDelete.Id));
+                        _usersCollection.UpdateOne(userFilter, update);
+                    }
+                    _workspacesCollection.DeleteOne(Builders<Workspace>.Filter.Eq(w => w.Id, id));
+                    session.CommitTransaction();
+                    return Ok("Workspace deleted");
+                }
+                catch (Exception)
+                {
+                    session.AbortTransaction();
+                    return NotFound("Something went wrong");
+                }
             }
         }
     }

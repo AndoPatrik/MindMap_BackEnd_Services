@@ -64,10 +64,21 @@
       ],
       "UpstreamPathTemplate": "/workspace/GetWorkspacesOfUser/{id}",
       "UpstreamHttpMethod": [ "GET" ]
+    },
+    //DELETE WORKSPACE
+    {
+      "DownstreamPathTemplate": "/api/Workspace/delete/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7001
+        }
+      ],
+      "UpstreamPathTemplate": "/workspace/delete/{id}",
+      "UpstreamHttpMethod": [ "DELETE" ]
     }
   ],
-  
-
   "GlobalConfiguration": {
     "BaseUrl": "https://localhost:5001"
   }

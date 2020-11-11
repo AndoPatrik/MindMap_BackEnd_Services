@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using MindMap_General_Purpose_API.Controllers;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Collections.Generic;
 
@@ -23,6 +24,6 @@ namespace MindMap_General_Purpose_API.Models
         public string Password { get; set; }
         public bool IsActive { get; set; }
         [BsonElement("ConnectedWorkspaces")]
-        public List<string> ConnectedWorkspaces { get; set; }
+        public List<ConnectedWorkspace> ConnectedWorkspaces { get; set; }
     }
 }
