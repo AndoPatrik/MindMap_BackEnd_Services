@@ -95,7 +95,7 @@ namespace MindMap_General_Purpose_API.Controllers
             }
         }
 
-        [HttpDelete("/delete/{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteWorkspace(string id) 
         {
             //TODO:
