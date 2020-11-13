@@ -1,4 +1,7 @@
-﻿{
+﻿{ 
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:5001"
+  },
   "Routes": [
     // REGISTRATION HTTPS
     {
@@ -67,7 +70,20 @@
     },
     //DELETE WORKSPACE
     {
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7001
+        }
+      ],
       "DownstreamPathTemplate": "/api/Workspace/delete/{id}",
+      "DownstreamScheme": "https",
+      "UpstreamHttpMethod": [ "DELETE" ],
+      "UpstreamPathTemplate": "/workspace/delete/{id}"
+    },
+    //GET WORKSPACE BY ID
+    {
+      "DownstreamPathTemplate": "/api/Workspace/Get/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -75,11 +91,8 @@
           "Port": 7001
         }
       ],
-      "UpstreamPathTemplate": "/workspace/delete/{id}",
-      "UpstreamHttpMethod": [ "DELETE" ]
+      "UpstreamPathTemplate": "/workspace/Get/{id}",
+      "UpstreamHttpMethod": [ "GET" ]
     }
-  ],
-  "GlobalConfiguration": {
-    "BaseUrl": "https://localhost:5001"
-  }
+  ]
 }
