@@ -74,7 +74,7 @@ namespace MindMap_General_Purpose_API.Controllers
 
             if(!user.IsActive) return BadRequest("User is not active.");
 
-            return Ok(JWT.GenerateToken(user.Id));
+            return Ok(JWT.GenerateToken(user.Id, user.Email));
         }
     }
 }
