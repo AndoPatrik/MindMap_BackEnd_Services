@@ -1,7 +1,13 @@
 ﻿using MindMap_General_Purpose_API;
 using MindMap_General_Purpose_API.Models;
+using Mongo2Go;
+using MongoDB.Bson.Serialization;
+using MongoDB.Driver;
 using Newtonsoft.Json;
 using SharedResources.SharedTests;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -12,6 +18,26 @@ namespace xUnit_General_Purpose_API
     public class UsersControllerIntegrationTests : IClassFixture<WebApplicationFactoryWithTestMongo<Startup>>
     {
         private readonly HttpClient _client;
+
+        internal static MongoDbRunner _runner;
+        internal static IMongoCollection<User> _collection;
+        internal static string _databaseName = "MindMapDb";
+        internal static string _collectionName = "User";
+
+        internal static void CreateConnection()
+        {
+            _runner = MongoDbRunner.Start(singleNodeReplSet: false);
+
+            MongoClient client = new MongoClient(_runner.ConnectionString);
+            IMongoDatabase database = client.GetDatabase(_databaseName);
+            _collection = database.GetCollection<User>(_collectionName);
+        }
+
+        public static IList<T> ReadBsonFile<T>(string fileName)
+        {
+            string[] content = File.ReadAllLines(fileName);
+            return content.Select(s => BsonSerializer.Deserialize<T>(s)).ToList();
+        }
 
         public UsersControllerIntegrationTests(WebApplicationFactoryWithTestMongo<Startup> appFactory)
         {
