@@ -5,10 +5,14 @@
 #EmailAPI
 MindMap_Email_API/bin
 MindMap_Email_API/obj
+MindMap_Email_API/.config
+MindMap_Email_API/Properties/PublishProfiles
 
 #Gateway
 MindMap_Gateway/bin
 MindMap_Gateway/obj
+MindMap_Gateway/.config
+MindMap_Gateway/Properties/PublishProfiles
 
 #GeneralPurposeAPI
 MindMap_General_Purpose_API/bin

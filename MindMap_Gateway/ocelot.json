@@ -1,12 +1,12 @@
 ﻿{ 
   "GlobalConfiguration": {
-    "BaseUrl": "https://localhost:5001"
+    "BaseUrl": "http://localhost:5001"
   },
   "Routes": [
     // REGISTRATION HTTPS
     {
       "DownstreamPathTemplate": "/api/usermanagement/registration",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -19,7 +19,7 @@
     //ACTIVATE HTTPS
     {
       "DownstreamPathTemplate": "/api/usermanagement/activate/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -32,7 +32,7 @@
     //AUTHENTICATE HTTPS
     {
       "DownstreamPathTemplate": "/api/usermanagement/authenticate",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -45,7 +45,7 @@
     //CREATE WORKSPACE
     {
       "DownstreamPathTemplate": "/api/Workspace/Create",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -58,7 +58,7 @@
     //FETCH ALL WORKSPACES OF A USER
     {
       "DownstreamPathTemplate": "/api/Workspace/GetWorkspacesOfUser/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
@@ -77,14 +77,14 @@
         }
       ],
       "DownstreamPathTemplate": "/api/Workspace/delete/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "UpstreamHttpMethod": [ "DELETE" ],
       "UpstreamPathTemplate": "/workspace/delete/{id}"
     },
     //GET WORKSPACE BY ID
     {
       "DownstreamPathTemplate": "/api/Workspace/Get/{id}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
