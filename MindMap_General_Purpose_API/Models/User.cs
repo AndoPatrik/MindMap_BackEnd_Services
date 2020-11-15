@@ -9,7 +9,7 @@ namespace MindMap_General_Purpose_API.Models
     {
         public User()
         {
-            this.ConnectedWorkspaces = new List<ConnectedWorkspace>();
+            //this.ConnectedWorkspaces = new List<ConnectedWorkspace>();
         }
 
         public User(string email, string password)
@@ -20,10 +20,16 @@ namespace MindMap_General_Purpose_API.Models
 
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
+        [BsonIgnoreIfNull]
         public string Email { get; set; }
+        [BsonIgnoreIfNull]
         public string Password { get; set; }
+        [BsonIgnoreIfNull]
+        [BsonIgnoreIfDefault]
         public bool IsActive { get; set; }
-        [BsonElement("ConnectedWorkspaces")]
+        [BsonIgnoreIfNull]
+        [BsonIgnoreIfDefault]
+        //[BsonElement("ConnectedWorkspaces")]
         public List<ConnectedWorkspace> ConnectedWorkspaces { get; set; }
     }
 }

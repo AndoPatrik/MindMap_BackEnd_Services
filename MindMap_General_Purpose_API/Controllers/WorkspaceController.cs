@@ -170,5 +170,32 @@ namespace MindMap_General_Purpose_API.Controllers
             }
       
         }
+
+        [HttpPost("addUserToWorkspcae/{id}")]
+        public async Task<IActionResult> AddUsersToWorkspace([FromBody] List<User> bodyPayload, string id ) 
+        {
+            try
+            {
+                var filter = Builders<Workspace>.Filter.Eq(w => w.Id, id);
+                Workspace workspace = await _workspacesCollection.Find(filter).FirstOrDefaultAsync();
+                foreach (var user in bodyPayload)
+                {
+                    User userInDb = await _usersCollection.Find(Builders<User>.Filter.Eq(u => u.Email, user.Email)).FirstOrDefaultAsync();
+                    if (userInDb != null)
+                    {
+                        User userToAdd = new User();
+                        userToAdd.Email = userInDb.Email;
+                        userToAdd.Id = userInDb.Id;
+                        workspace.Users.Add(userToAdd);
+                    }
+                }
+                _workspacesCollection.ReplaceOne(filter, workspace);
+                return Ok("User(s) added to workspace.");
+            }
+            catch (Exception)
+            {
+                return Conflict("User(s) could not be added.");
+            }
+        }
     }
 }

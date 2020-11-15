@@ -3,6 +3,7 @@ using MindMap_General_Purpose_API.Models;
 using MindMap_General_Purpose_API.Utils;
 using MongoDB.Driver;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,8 +34,9 @@ namespace MindMap_General_Purpose_API.Controllers
                 bodyPayload.IsActive = false;
                 var existingUser = await _collection.Find(Builders<User>.Filter.Eq(u => u.Email, bodyPayload.Email)).FirstOrDefaultAsync();
                 if (existingUser != null) return Conflict("This email is alrady registered.");
+                bodyPayload.ConnectedWorkspaces = new List<ConnectedWorkspace>();
                 await _collection.InsertOneAsync(bodyPayload);
-                bool IsSuccesful = await HttpService.PostAsync("https://localhost:6001/api/email", bodyPayload, CancellationToken.None);
+                bool IsSuccesful = await HttpService.PostAsync("http://localhost:6001/api/email", bodyPayload, CancellationToken.None);
                 // Check against 'IsSuccesful' to see email status code.
                 return Ok("New user been added");
             }

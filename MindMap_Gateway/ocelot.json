@@ -119,6 +119,19 @@
       ],
       "UpstreamPathTemplate": "/workspace/clone/{id}",
       "UpstreamHttpMethod": [ "GET" ]
+    },
+    //ADD USERS TO WORKSPACE
+    {
+      "DownstreamPathTemplate": "/api/workspace/addUserToWorkspcae/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7001
+        }
+      ],
+      "UpstreamPathTemplate": "/workspace/shareworkspace/{id}",
+      "UpstreamHttpMethod": [ "POST" ]
     }
   ]
 }

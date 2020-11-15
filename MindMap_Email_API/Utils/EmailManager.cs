@@ -9,7 +9,7 @@ namespace MindMap_Email_API.Utils
         public static void CreateEmail(string id, string targetEmail, string secret) 
         {
             string to = targetEmail;
-            string content = @"Activate your account by clicking: https://localhost:5001/activate/" + id;
+            string content = @"Activate your account by clicking: http://localhost:5001/activate/" + id + " or http://mindmap.ddns.net:5001/activate/ " + id;
             string senderPw = secret;
             string senderEmail = "mindmapper.agent@gmail.com";
 

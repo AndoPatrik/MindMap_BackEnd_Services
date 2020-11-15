@@ -15,7 +15,7 @@ namespace MindMap_General_Purpose_API.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
         public string Title { get; set; }
-        public IEnumerable<User> Users { get; set; }
+        public List<User> Users { get; set; }
         public User Creator { get; set; }
         [BsonElement("ShareLink")]
         public string ShareLink { get; }
