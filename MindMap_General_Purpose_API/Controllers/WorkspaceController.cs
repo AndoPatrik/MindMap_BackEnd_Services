@@ -98,11 +98,6 @@ namespace MindMap_General_Purpose_API.Controllers
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteWorkspace(string id) 
         {
-            //TODO:
-            // Transaction
-            // Remove workspace from users ( based on workspace.Users )
-            // Remove workspace by id
-
             using (var session = _mongoClient.StartSession())
             {
                 try
@@ -124,6 +119,20 @@ namespace MindMap_General_Purpose_API.Controllers
                     session.AbortTransaction();
                     return NotFound("Something went wrong");
                 }
+            }
+        }
+
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateWorkspace([FromBody] Workspace bodyPayload) 
+        {
+            try
+            {
+                await _workspacesCollection.ReplaceOneAsync(Builders<Workspace>.Filter.Eq(w => w.Id, bodyPayload.Id), bodyPayload);
+                return Ok("Sucessful change.");
+            }
+            catch (Exception)
+            {
+                return NotFound("Workspace could not be updated.");
             }
         }
     }

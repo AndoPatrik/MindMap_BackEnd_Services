@@ -93,6 +93,19 @@
       ],
       "UpstreamPathTemplate": "/workspace/Get/{id}",
       "UpstreamHttpMethod": [ "GET" ]
+    },
+    //UPDATE WORKSPACE
+    {
+      "DownstreamPathTemplate": "/api/workspace/update",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7001
+        }
+      ],
+      "UpstreamPathTemplate": "/workspace/update",
+      "UpstreamHttpMethod": [ "PUT" ]
     }
   ]
 }
