@@ -106,6 +106,19 @@
       ],
       "UpstreamPathTemplate": "/workspace/update",
       "UpstreamHttpMethod": [ "PUT" ]
+    },
+    //CLONE WORKSPACE
+    {
+      "DownstreamPathTemplate": "/api/workspace/clone/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7001
+        }
+      ],
+      "UpstreamPathTemplate": "/workspace/clone/{id}",
+      "UpstreamHttpMethod": [ "GET" ]
     }
   ]
 }

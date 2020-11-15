@@ -135,5 +135,40 @@ namespace MindMap_General_Purpose_API.Controllers
                 return NotFound("Workspace could not be updated.");
             }
         }
+
+        [HttpGet("clone/{id}")]
+        public async Task<IActionResult> CloneWorkspaceById(string id) 
+        {
+            //TODO
+            // change the creator of the cloned version ?!
+            using (var session = _mongoClient.StartSession())
+            {
+                try
+                {
+                    session.StartTransaction();
+                    Workspace wsToClone = await _workspacesCollection.Find(Builders<Workspace>.Filter.Eq(w => w.Id, id)).FirstOrDefaultAsync();
+                    Workspace wsClone = wsToClone;
+                    wsClone.Id = null;
+                    await _workspacesCollection.InsertOneAsync(wsClone);
+
+                    foreach (User user in wsClone.Users) 
+                    {
+                        User userToUpdate = await _usersCollection.Find(Builders<User>.Filter.Eq(u => u.Id, user.Id)).FirstOrDefaultAsync();
+                        User updatedUser = userToUpdate;
+                        updatedUser.ConnectedWorkspaces.Add(new ConnectedWorkspace(wsClone.Id));
+                        var result = await _usersCollection.ReplaceOneAsync(Builders<User>.Filter.Eq(u => u.Id, user.Id), updatedUser);
+                    }
+
+                    session.CommitTransaction();
+                    return Ok(wsClone);
+                }
+                catch (Exception)
+                {
+                    session.AbortTransaction();
+                    return Conflict("Workspace could not be cloned.");
+                }
+            }
+      
+        }
     }
 }
