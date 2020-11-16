@@ -180,13 +180,17 @@ namespace MindMap_General_Purpose_API.Controllers
                 Workspace workspace = await _workspacesCollection.Find(filter).FirstOrDefaultAsync();
                 foreach (var user in bodyPayload)
                 {
-                    User userInDb = await _usersCollection.Find(Builders<User>.Filter.Eq(u => u.Email, user.Email)).FirstOrDefaultAsync();
+                    var userFilter = Builders<User>.Filter.Eq(u => u.Email, user.Email);
+                    User userInDb = await _usersCollection.Find(userFilter).FirstOrDefaultAsync();
                     if (userInDb != null)
                     {
                         User userToAdd = new User();
                         userToAdd.Email = userInDb.Email;
                         userToAdd.Id = userInDb.Id;
                         workspace.Users.Add(userToAdd);
+
+                        userInDb.ConnectedWorkspaces.Add(new ConnectedWorkspace(workspace.Id));
+                        await _usersCollection.ReplaceOneAsync(userFilter, userInDb);
                     }
                 }
                 _workspacesCollection.ReplaceOne(filter, workspace);
