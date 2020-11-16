@@ -174,31 +174,48 @@ namespace MindMap_General_Purpose_API.Controllers
         [HttpPost("addUserToWorkspcae/{id}")]
         public async Task<IActionResult> AddUsersToWorkspace([FromBody] List<User> bodyPayload, string id ) 
         {
-            try
+            using (var session = _mongoClient.StartSession())
             {
-                var filter = Builders<Workspace>.Filter.Eq(w => w.Id, id);
-                Workspace workspace = await _workspacesCollection.Find(filter).FirstOrDefaultAsync();
-                foreach (var user in bodyPayload)
+                try
                 {
-                    var userFilter = Builders<User>.Filter.Eq(u => u.Email, user.Email);
-                    User userInDb = await _usersCollection.Find(userFilter).FirstOrDefaultAsync();
-                    if (userInDb != null)
+                    session.StartTransaction();
+                    bool hasChanged = false;
+                    var filter = Builders<Workspace>.Filter.Eq(w => w.Id, id);
+                    Workspace workspace = await _workspacesCollection.Find(filter).FirstOrDefaultAsync();
+                    foreach (var user in bodyPayload)
                     {
-                        User userToAdd = new User();
-                        userToAdd.Email = userInDb.Email;
-                        userToAdd.Id = userInDb.Id;
-                        workspace.Users.Add(userToAdd);
+                        var userFilter = Builders<User>.Filter.Eq(u => u.Email, user.Email);
+                        User userInDb = await _usersCollection.Find(userFilter).FirstOrDefaultAsync();
+                        if (userInDb != null)
+                        {
+                            ConnectedWorkspace connectedWs = userInDb.ConnectedWorkspaces.Find(cw => cw.WorkspaceId == id);
+                            if (connectedWs == null)
+                            {
+                                User userToAdd = new User();
+                                userToAdd.Email = userInDb.Email;
+                                userToAdd.Id = userInDb.Id;
+                                workspace.Users.Add(userToAdd);
 
-                        userInDb.ConnectedWorkspaces.Add(new ConnectedWorkspace(workspace.Id));
-                        await _usersCollection.ReplaceOneAsync(userFilter, userInDb);
+                                userInDb.ConnectedWorkspaces.Add(new ConnectedWorkspace(workspace.Id));
+                                await _usersCollection.ReplaceOneAsync(userFilter, userInDb);
+                                hasChanged = true;
+                            }
+                        }
+
                     }
+                    if (hasChanged)
+                    {
+                        _workspacesCollection.ReplaceOne(filter, workspace);
+                        session.CommitTransaction();
+                    }
+
+                    return Ok("User(s) added to workspace.");
                 }
-                _workspacesCollection.ReplaceOne(filter, workspace);
-                return Ok("User(s) added to workspace.");
-            }
-            catch (Exception)
-            {
-                return Conflict("User(s) could not be added.");
+                catch (Exception)
+                {
+                    session.AbortTransaction();
+                    return Conflict("User(s) could not be added.");
+                }
             }
         }
     }
